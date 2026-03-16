@@ -1,0 +1,43 @@
+name: Deploy Notify
+
+on:
+  # Runs after Vercel deployment status is reported
+  deployment_status:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  notify:
+    name: Post preview URL to PR
+    runs-on: ubuntu-latest
+
+    # Only run when deployment succeeds and it's a preview (not production)
+    if: |
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment != 'Production'
+
+    steps:
+      - name: Find PR for this commit
+        uses: jwalton/gh-find-current-pr@v1
+        id: find-pr
+        with:
+          state: open
+
+      - name: Post preview URL comment
+        if: steps.find-pr.outputs.number
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ steps.find-pr.outputs.pr }}
+          body: |
+            ## Preview Deploy Ready
+
+            | Environment | URL |
+            |---|---|
+            | Preview | ${{ github.event.deployment_status.environment_url }} |
+
+            Commit: `${{ github.sha }}`
+          # Update existing comment instead of creating a new one each push
+          edit-mode: replace
+          comment-id: ${{ steps.find-pr.outputs.comment-id }}

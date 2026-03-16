@@ -1,0 +1,50 @@
+name: Semgrep
+
+on:
+  # Diff-aware scan on PRs — only flags new issues introduced by the PR
+  pull_request: {}
+
+  # Full scan on push to main
+  push:
+    branches:
+      - main
+
+  # Full scan on a daily schedule (randomized time to avoid GHA load spikes)
+  schedule:
+    - cron: '17 14 * * *'
+
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  security-events: write  # Required for SARIF upload to GitHub Security tab
+
+jobs:
+  semgrep:
+    name: semgrep/ci
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+
+    # Skip PRs from dependabot to avoid token permission issues
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep scan
+        run: semgrep ci
+        env:
+          # Your Semgrep AppSec Platform token
+          # Add SEMGREP_APP_TOKEN to GitHub repo secrets:
+          # Settings → Secrets and Variables → Actions → New repository secret
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+          # Rule packs for MSWLab Next.js + TypeScript projects
+          # These run in addition to rules configured in Semgrep AppSec Platform
+          SEMGREP_RULES: >-
+            p/nextjs
+            p/typescript
+            p/secrets
+            p/owasp-top-ten
