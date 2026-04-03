@@ -109,6 +109,7 @@ A "skill" is a markdown instruction file that Claude reads to guide its behavior
 | [`mswlab-claude-code-starter`](./skills/mswlab-claude-code-starter.md) | Claude.ai | Generates Claude Code handoff prompt |
 | [`mswlab-project-setup`](./skills/mswlab-project-setup.md) | Claude Code | Full project initialization (10 phases) |
 | [`mswlab-cicd`](./skills/mswlab-cicd.md) | Claude Code | CI/CD workflow setup |
+| [`mswlab-handoff-plan-dispatch`](./skills/mswlab-handoff-plan-dispatch.md) | Claude Code | Full build dispatch — zero to deployed MVP in one prompt |
 
 See [Skill Files](#skill-files-full-content) for full content of each skill.
 
@@ -264,6 +265,7 @@ The following pages contain the complete content of each skill:
 - **[mswlab-claude-code-starter](./skills/mswlab-claude-code-starter.md)** — The Claude Code handoff prompt template
 - **[mswlab-project-setup](./skills/mswlab-project-setup.md)** — The 10-phase project initialization playbook
 - **[mswlab-cicd](./skills/mswlab-cicd.md)** — CI/CD workflow setup instructions
+- **[mswlab-handoff-plan-dispatch](./skills/mswlab-handoff-plan-dispatch.md)** — Full build dispatch prompt (all phases in one shot)
 
 ---
 
