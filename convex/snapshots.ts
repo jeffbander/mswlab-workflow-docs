@@ -13,19 +13,29 @@ export const generateUploadUrl = mutation({
 export const create = mutation({
   args: {
     caseId: v.id("cases"),
-    kind: v.union(
-      v.literal("hemodynamics"),
-      v.literal("vitals"),
-      v.literal("device_label")
+    kind: v.optional(
+      v.union(
+        v.literal("hemodynamics"),
+        v.literal("vitals"),
+        v.literal("device_label")
+      )
     ),
+    snapshotType: v.optional(v.string()),
     storageId: v.id("_storage"),
+    filename: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUserOrThrowForMutation(ctx);
 
+    // Accept either "kind" or "snapshotType" from the frontend
+    const kind = (args.kind ?? args.snapshotType ?? "hemodynamics") as
+      | "hemodynamics"
+      | "vitals"
+      | "device_label";
+
     const snapshotId = await ctx.db.insert("snapshots", {
       caseId: args.caseId,
-      kind: args.kind,
+      kind,
       storageId: args.storageId,
       confirmed: false,
     });

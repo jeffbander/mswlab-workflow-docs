@@ -14,29 +14,33 @@ export const create = mutation({
       v.literal("vitals_snapshot"),
       v.literal("device_implant"),
       v.literal("complication"),
-      v.literal("free_text")
+      v.literal("free_text"),
+      v.literal("phase_marker")
     ),
-    eventTime: v.number(),
     source: v.union(
       v.literal("manual"),
       v.literal("ocr"),
       v.literal("asr")
     ),
     payload: v.any(),
-    confidence: v.number(),
+    eventTime: v.optional(v.number()),
+    confidence: v.optional(v.number()),
+    confirmed: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUserOrThrowForMutation(ctx);
 
-    const confirmed = args.source === "manual";
+    const confirmed = args.confirmed ?? (args.source === "manual");
+    const eventTime = args.eventTime ?? Date.now();
+    const confidence = args.confidence ?? (args.source === "manual" ? 1.0 : 0.5);
 
     const eventId = await ctx.db.insert("events", {
       caseId: args.caseId,
       eventType: args.eventType,
-      eventTime: args.eventTime,
+      eventTime,
       source: args.source,
       payload: args.payload,
-      confidence: args.confidence,
+      confidence,
       confirmed,
       ...(confirmed
         ? { confirmedAt: Date.now(), confirmedBy: user.externalId }

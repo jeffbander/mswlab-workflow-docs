@@ -93,7 +93,7 @@ export const generateNote = mutation({
     if (eventsByType["timeout"]?.length) {
       sections.push(`--- TIMEOUT ---`);
       for (const e of eventsByType["timeout"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -103,11 +103,11 @@ export const generateNote = mutation({
     const accessEvents = [
       ...(eventsByType["access"] ?? []),
       ...(eventsByType["sedation_check"] ?? []),
-    ].sort((a, b) => a.eventTime - b.eventTime);
+    ].sort((a, b) => (a.eventTime ?? 0) - (b.eventTime ?? 0));
     if (accessEvents.length) {
       sections.push(`--- ACCESS & SEDATION ---`);
       for (const e of accessEvents) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] (${e.eventType}) ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -117,7 +117,7 @@ export const generateNote = mutation({
     if (eventsByType["hemodynamics_snapshot"]?.length) {
       sections.push(`--- HEMODYNAMICS ---`);
       for (const e of eventsByType["hemodynamics_snapshot"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -138,7 +138,7 @@ export const generateNote = mutation({
     if (eventsByType["device_implant"]?.length) {
       sections.push(`--- DEVICE IMPLANT EVENTS ---`);
       for (const e of eventsByType["device_implant"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -148,7 +148,7 @@ export const generateNote = mutation({
     if (eventsByType["vitals_snapshot"]?.length) {
       sections.push(`--- VITALS ---`);
       for (const e of eventsByType["vitals_snapshot"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -158,7 +158,7 @@ export const generateNote = mutation({
     if (eventsByType["med_admin"]?.length) {
       sections.push(`--- MEDICATIONS ---`);
       for (const e of eventsByType["med_admin"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -168,7 +168,17 @@ export const generateNote = mutation({
     if (eventsByType["complication"]?.length) {
       sections.push(`--- COMPLICATIONS ---`);
       for (const e of eventsByType["complication"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
+        sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
+      }
+      sections.push(``);
+    }
+
+    // Phase Markers
+    if (eventsByType["phase_marker"]?.length) {
+      sections.push(`--- PHASE MARKERS ---`);
+      for (const e of eventsByType["phase_marker"]) {
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);
@@ -178,7 +188,7 @@ export const generateNote = mutation({
     if (eventsByType["free_text"]?.length) {
       sections.push(`--- DISPOSITION / NOTES ---`);
       for (const e of eventsByType["free_text"]) {
-        const time = new Date(e.eventTime).toLocaleTimeString();
+        const time = e.eventTime ? new Date(e.eventTime).toLocaleTimeString() : "N/A";
         sections.push(`[${time}] ${JSON.stringify(e.payload)}`);
       }
       sections.push(``);

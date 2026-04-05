@@ -103,16 +103,17 @@ export default defineSchema({
         v.literal("vitals_snapshot"),
         v.literal("device_implant"),
         v.literal("complication"),
-        v.literal("free_text")
+        v.literal("free_text"),
+        v.literal("phase_marker")
       ),
-      eventTime: v.number(),
+      eventTime: v.optional(v.number()),
       source: v.union(
         v.literal("manual"),
         v.literal("ocr"),
         v.literal("asr")
       ),
       payload: v.any(),
-      confidence: v.number(),
+      confidence: v.optional(v.number()),
       confirmed: v.boolean(),
       confirmedAt: v.optional(v.number()),
       confirmedBy: v.optional(v.string()),
